@@ -1,6 +1,7 @@
 package com.liangdekai.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,9 +9,12 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
+import com.liangdekai.activity.MainActivity;
+import com.liangdekai.activity.ShowActivity;
 import com.liangdekai.photodepot.R;
 import com.liangdekai.util.LoadImage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PhotoAdapter extends BaseAdapter{
@@ -41,7 +45,7 @@ public class PhotoAdapter extends BaseAdapter{
     }
 
     @Override
-    public View getView(int i, View convertView, ViewGroup viewGroup) {
+    public View getView(final int i, View convertView, ViewGroup viewGroup) {
         ViewHolder viewHolder ;
         View view ;
         if (convertView == null){
@@ -55,6 +59,17 @@ public class PhotoAdapter extends BaseAdapter{
         }
         viewHolder.imageView.setImageResource(R.mipmap.empty);
         viewHolder.imageView.setTag(mImageList.get(i));
+
+        viewHolder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext , ShowActivity.class);
+                intent.putStringArrayListExtra("imageList" , (ArrayList<String>) mImageList);
+                intent.putExtra("sign" , i);
+                mContext.startActivity(intent);
+            }
+        });
+
         mLoadImage.loadImage(mImageList.get(i) , viewHolder.imageView);
         return view;
     }

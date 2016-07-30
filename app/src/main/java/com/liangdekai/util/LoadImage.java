@@ -1,15 +1,21 @@
 package com.liangdekai.util;
 
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.util.LruCache;
+import android.view.View;
 import android.widget.ImageView;
 
+import com.liangdekai.activity.ShowActivity;
+
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;

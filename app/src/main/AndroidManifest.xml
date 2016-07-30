@@ -16,6 +16,10 @@
             </intent-filter>
         </activity>
 
+        <activity android:name="com.liangdekai.activity.ShowActivity">
+
+        </activity>
+
     </application>
 
 </manifest>
