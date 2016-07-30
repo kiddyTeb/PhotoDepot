@@ -2,15 +2,13 @@ package com.liangdekai.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
-import com.liangdekai.activity.MainActivity;
-import com.liangdekai.activity.ShowActivity;
+import com.liangdekai.activity.ImageActivity;
 import com.liangdekai.photodepot.R;
 import com.liangdekai.util.LoadImage;
 
@@ -63,9 +61,9 @@ public class PhotoAdapter extends BaseAdapter{
         viewHolder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(mContext , ShowActivity.class);
+                Intent intent = new Intent(mContext , ImageActivity.class);
                 intent.putStringArrayListExtra("imageList" , (ArrayList<String>) mImageList);
-                intent.putExtra("sign" , i);
+                intent.putExtra("level" , i);
                 mContext.startActivity(intent);
             }
         });
