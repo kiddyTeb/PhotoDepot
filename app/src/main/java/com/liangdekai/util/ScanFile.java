@@ -45,18 +45,15 @@ public class ScanFile {
                             return s.endsWith(".jpg")||s.endsWith(".png") || s.endsWith(".jpeg");
                         }
                     }));
-                    Log.d("test" , temporty.size()+"");
                     if (fileList.contains(imageFile)){
                         continue;
                     }
                     fileList.add(imageFile);
                     for (int i = 0 ; i < temporty.size() ; i++){
                         String absolutePath = imageFile.getAbsolutePath()+"/"+temporty.get(i);
-                        Log.d("test" , absolutePath);
                         imageList.add(absolutePath);
                     }
                 }
-                Log.d("test" , imageList.size()+"");
                 listener.succeed(imageList);
                 cursor.close();
             }

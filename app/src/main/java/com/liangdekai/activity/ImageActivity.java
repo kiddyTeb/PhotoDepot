@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.liangdekai.photodepot.R;
+import com.liangdekai.util.CompressImage;
 
 import java.util.List;
 
@@ -69,9 +70,12 @@ public class ImageActivity extends Activity implements ViewPager.OnPageChangeLis
     class ViewPagerAdapter extends PagerAdapter{
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            View view = LayoutInflater.from(ImageActivity.this).inflate(R.layout.fragment_show , null);
+            View view = LayoutInflater.from(ImageActivity.this).inflate(R.layout.view_show, null);
             ImageView imageView = (ImageView) view.findViewById(R.id.fragment_show);
             Bitmap bitmap = BitmapFactory.decodeFile(mImageList.get(position));
+            if (bitmap.getByteCount() > 6*1024*1024){
+                bitmap = CompressImage.compressImage(mImageList.get(position) , 600 , 600);
+            }
             imageView.setImageBitmap(bitmap);
             container.addView(view);
             return view;
