@@ -51,6 +51,7 @@ public class ImageDetailActivity extends Activity implements ViewPager.OnPageCha
         ViewPagerAdapter adapter = new ViewPagerAdapter();
         mViewPager.setAdapter(adapter);
         mViewPager.setCurrentItem(mLevel);
+        mViewPager.setOffscreenPageLimit(5);
         mViewPager.setOnPageChangeListener(this);
     }
 
@@ -84,7 +85,7 @@ public class ImageDetailActivity extends Activity implements ViewPager.OnPageCha
             ImageView imageView = (ImageView) view.findViewById(R.id.detail_show);
             Bitmap bitmap = BitmapFactory.decodeFile(mImageList.get(position));
             if (bitmap.getByteCount() > 6*1024*1024){
-                bitmap = CompressImage.compressImage(mImageList.get(position) , 600 , 600);
+                bitmap = CompressImage.compressImage(mImageList.get(position) , 500 , 500);
             }
             imageView.setImageBitmap(bitmap);
             container.addView(view);
