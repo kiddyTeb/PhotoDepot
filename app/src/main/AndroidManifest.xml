@@ -16,7 +16,11 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.liangdekai.activity.ImageActivity">
+        <activity android:name="com.liangdekai.activity.ImageDetailActivity">
+
+        </activity>
+
+        <activity android:name="com.liangdekai.activity.ChooseImageActivity">
 
         </activity>
 

@@ -1,6 +1,8 @@
 package com.liangdekai.activity;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -16,19 +18,27 @@ import android.widget.TextView;
 import com.liangdekai.photodepot.R;
 import com.liangdekai.util.CompressImage;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class ImageActivity extends Activity implements ViewPager.OnPageChangeListener{
+public class ImageDetailActivity extends Activity implements ViewPager.OnPageChangeListener{
     private ViewPager mViewPager ;
     private TextView mTextView ;
     private List<String> mImageList;
     private int mLevel ;
 
+    public static void startActivity(Context context ,List<String> list , int position){
+        Intent intent = new Intent(context , ImageDetailActivity.class);
+        intent.putStringArrayListExtra("imageList" , (ArrayList<String>) list);
+        intent.putExtra("level" , position);
+        context.startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_detail);
+        setContentView(R.layout.activity_detail_image);
         init();
     }
 
@@ -70,8 +80,8 @@ public class ImageActivity extends Activity implements ViewPager.OnPageChangeLis
     class ViewPagerAdapter extends PagerAdapter{
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            View view = LayoutInflater.from(ImageActivity.this).inflate(R.layout.view_show, null);
-            ImageView imageView = (ImageView) view.findViewById(R.id.fragment_show);
+            View view = LayoutInflater.from(ImageDetailActivity.this).inflate(R.layout.part_vp_show, null);
+            ImageView imageView = (ImageView) view.findViewById(R.id.detail_show);
             Bitmap bitmap = BitmapFactory.decodeFile(mImageList.get(position));
             if (bitmap.getByteCount() > 6*1024*1024){
                 bitmap = CompressImage.compressImage(mImageList.get(position) , 600 , 600);

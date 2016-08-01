@@ -2,21 +2,35 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000">
+    android:background="#000000"
+    >
 
-    <ImageButton
-        android:id="@+id/activity_main_add"
-        android:layout_width="90dp"
-        android:layout_height="90dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="10dp"
-        android:background="@mipmap/add_photo"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@mipmap/title">
+        <Button
+            android:id="@+id/main_bt_back"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@mipmap/back"/>
+
+        <Button
+            android:id="@+id/main_bt_finish"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="5dp"
+            android:text="完成"
+            android:background="@mipmap/title"
+            />
+
+    </RelativeLayout>
 
     <GridView
         android:id="@+id/main_gv_photo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="20dp"
         android:cacheColorHint="@android:color/transparent"
         android:columnWidth="110dp"
         android:gravity="center"

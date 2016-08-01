@@ -16,8 +16,8 @@ import java.util.concurrent.Semaphore;
 
 public class LoadImage {
     public static final int TASK_COME = 0;
-    public static final int THREAD_COUNT = 3;
-    public static final int COMPRESS_SIZE = 200;
+    public static final int THREAD_COUNT = Runtime.getRuntime().availableProcessors()+1;
+    public static final int COMPRESS_SIZE = 100;
     private static LoadImage mLoadImage;
     private Handler mThreadHandler;
     private volatile Semaphore semaphore ;

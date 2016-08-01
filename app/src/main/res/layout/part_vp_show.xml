@@ -4,7 +4,7 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/fragment_show"
+        android:id="@+id/detail_show"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#000000"
