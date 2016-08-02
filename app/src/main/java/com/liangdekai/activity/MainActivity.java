@@ -19,7 +19,6 @@ public class MainActivity extends Activity{
     private List<String> mSelectedImage ;
     private ImageButton mBtnAdd ;
     private GridView mGridView ;
-    private ShowImageAdapter mShowImageAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,25 +29,34 @@ public class MainActivity extends Activity{
         setClickListener();
     }
 
+    /**
+     * 初始化控件
+     */
     private void initView(){
         mBtnAdd = (ImageButton) findViewById(R.id.activity_main_add);
         mGridView = (GridView) findViewById(R.id.main_gv_photo);
         mSelectedImage = new ArrayList<String>();
     }
 
+    /**
+     * 设置事件监听
+     */
     private void setClickListener(){
         mBtnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, ChooseImageActivity.class);
-                startActivityForResult(intent , 1);
+                startActivityForResult(intent , 1);//启动活动获取数据
             }
         });
     }
 
+    /**
+     * 设置GridView数据源
+     */
     private void setImage(){
-        mShowImageAdapter = new ShowImageAdapter(MainActivity.this , mSelectedImage);
-        mGridView.setAdapter(mShowImageAdapter);
+        ShowImageAdapter imageAdapter = new ShowImageAdapter(MainActivity.this, mSelectedImage);
+        mGridView.setAdapter(imageAdapter);
     }
 
     @Override

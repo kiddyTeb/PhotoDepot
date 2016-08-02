@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -14,13 +13,24 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * 扫描手机中所有的图片
+ */
 public class ScanFile {
 
+    /**
+     * 接口回调
+     */
     public interface ScanListener{
         void succeed(List<String> imageList);
         void failed();
     }
 
+    /**
+     * 扫描手机文件中的图片
+     * @param context
+     * @param listener
+     */
     public static void scanImageFile(final Context context , final ScanListener listener){
         if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
             listener.failed();
@@ -36,10 +46,10 @@ public class ScanFile {
                 Cursor cursor = contentResolver.query(uri , null , MediaStore.Images.Media.MIME_TYPE +"=? or "+ MediaStore.Images.Media.MIME_TYPE+"=? or "+ MediaStore.Images.Media.MIME_TYPE+"=?" ,
                         new String[]{"image/jpg","image/png" , "image/jpeg"} , MediaStore.Images.Media.DATE_MODIFIED );
                 while (cursor.moveToNext()){
-                    List<String> temporty ;
+                    List<String> temp ;
                     String path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
                     File imageFile = new File(path).getParentFile();
-                    temporty = Arrays.asList(imageFile.list(new FilenameFilter() {
+                    temp = Arrays.asList(imageFile.list(new FilenameFilter() {
                         @Override
                         public boolean accept(File file, String s) {
                             return s.endsWith(".jpg")||s.endsWith(".png") || s.endsWith(".jpeg");
@@ -49,8 +59,8 @@ public class ScanFile {
                         continue;
                     }
                     fileList.add(imageFile);
-                    for (int i = 0 ; i < temporty.size() ; i++){
-                        String absolutePath = imageFile.getAbsolutePath()+"/"+temporty.get(i);
+                    for (int i = 0 ; i < temp.size() ; i++){
+                        String absolutePath = imageFile.getAbsolutePath()+"/"+temp.get(i);
                         imageList.add(absolutePath);
                     }
                 }

@@ -60,19 +60,18 @@ public class ChooseImageAdapter extends BaseAdapter{
             viewHolder = (ViewHolder) view.getTag();
         }
         viewHolder.imageView.setImageResource(R.mipmap.empty);
-        viewHolder.imageView.setTag(mImageList.get(i));
-        //viewHolder.imageButton.setImageResource(R.mipmap.picture_unselected);
+        viewHolder.imageView.setTag(mImageList.get(i));//为每个图片控件设置TAG
 
         viewHolder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ImageDetailActivity.startActivity(mContext , mImageList , i);
+                ImageDetailActivity.startActivity(mContext , mImageList , i);//启动活动加载大图
             }
         });
         viewHolder.imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onButtonClick(mImageList.get(i) , viewHolder);
+                onButtonClick(mImageList.get(i) , viewHolder);//点击勾选按钮的具体事件
             }
         });
 
@@ -80,18 +79,27 @@ public class ChooseImageAdapter extends BaseAdapter{
         return view;
     }
 
+    /**
+     * 按钮具体的点击操作逻辑
+     * @param path
+     * @param viewHolder
+     */
     private void onButtonClick(String path , ViewHolder viewHolder){
-        if (mSelectedImage.contains(path)){
-            mSelectedImage.remove(path);
-            viewHolder.imageButton.setImageResource(R.mipmap.picture_unselected);
-            viewHolder.imageView.setColorFilter(null);
+        if (mSelectedImage.contains(path)){//如果已选容器中存在点击对应的图片路径，则视为取消选择
+            mSelectedImage.remove(path);//从容器中移除该路径
+            viewHolder.imageButton.setImageResource(R.mipmap.picture_unselected);//改变按钮状态为未选状态
+            viewHolder.imageView.setColorFilter(null);//取消滤镜
         }else{
-            mSelectedImage.add(path);
-            viewHolder.imageButton.setImageResource(R.mipmap.pictures_selected);
-            viewHolder.imageView.setColorFilter(Color.parseColor("#77000000"));
+            mSelectedImage.add(path);//添加已经选择的路径到容器中
+            viewHolder.imageButton.setImageResource(R.mipmap.pictures_selected);//改变按钮状态为已选状态
+            viewHolder.imageView.setColorFilter(Color.parseColor("#77000000"));//设置滤镜，点击改变颜色
         }
     }
 
+    /**
+     * 返回已选容器
+     * @return
+     */
     public List<String> getSelectedList(){
         return mSelectedImage;
     }

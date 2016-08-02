@@ -22,11 +22,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ImageDetailActivity extends Activity implements ViewPager.OnPageChangeListener{
-    private ViewPager mViewPager ;
     private TextView mTextView ;
     private List<String> mImageList;
-    private int mLevel ;
 
+    /**
+     * 启动本活动的带参方法
+     * @param context
+     * @param list
+     * @param position
+     */
     public static void startActivity(Context context ,List<String> list , int position){
         Intent intent = new Intent(context , ImageDetailActivity.class);
         intent.putStringArrayListExtra("imageList" , (ArrayList<String>) list);
@@ -42,17 +46,19 @@ public class ImageDetailActivity extends Activity implements ViewPager.OnPageCha
         init();
     }
 
+    /**
+     * 初始化控件，并设置viewPager数据源
+     */
     private void init(){
-        mViewPager = (ViewPager) findViewById(R.id.activity_vp_detail);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.activity_vp_detail);
         mTextView = (TextView) findViewById(R.id.activity_tv_record);
-        mImageList = getIntent().getStringArrayListExtra("imageList");
-        mLevel = getIntent().getIntExtra("level" , 0);
-        setIndex(mLevel);
+        mImageList = getIntent().getStringArrayListExtra("imageList");//获取所有图片的路径
+        int level = getIntent().getIntExtra("level", 0);//获取点击图片的当前位置
+        setIndex(level);//设置当前图片位置，以及图片总数
         ViewPagerAdapter adapter = new ViewPagerAdapter();
-        mViewPager.setAdapter(adapter);
-        mViewPager.setCurrentItem(mLevel);
-        mViewPager.setOffscreenPageLimit(5);
-        mViewPager.setOnPageChangeListener(this);
+        viewPager.setAdapter(adapter);
+        viewPager.setCurrentItem(level);
+        viewPager.setOnPageChangeListener(this);
     }
 
     @Override
@@ -62,9 +68,13 @@ public class ImageDetailActivity extends Activity implements ViewPager.OnPageCha
 
     @Override
     public void onPageSelected(int position) {
-        setIndex(position);
+        setIndex(position);//设置当前图片位置，以及图片总数
     }
 
+    /**
+     * //设置当前图片位置，以及图片总数
+     * @param position
+     */
     private void setIndex(int position){
         int temp = position + 1 ;
         String current = ""+temp;
@@ -84,7 +94,7 @@ public class ImageDetailActivity extends Activity implements ViewPager.OnPageCha
             View view = LayoutInflater.from(ImageDetailActivity.this).inflate(R.layout.part_vp_show, null);
             ImageView imageView = (ImageView) view.findViewById(R.id.detail_show);
             Bitmap bitmap = BitmapFactory.decodeFile(mImageList.get(position));
-            if (bitmap.getByteCount() > 6*1024*1024){
+            if (bitmap.getByteCount() > 6*1024*1024){//当图片超过6M大小则压缩显示
                 bitmap = CompressImage.compressImage(mImageList.get(position) , 500 , 500);
             }
             imageView.setImageBitmap(bitmap);

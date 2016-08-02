@@ -30,7 +30,7 @@ public class ChooseImageActivity extends Activity implements View.OnClickListene
     private Button mBtnFinish ;
     private ChooseImageAdapter mAdapter;
     private LoadImage mLoadImage;
-    private List<String> mImageList;
+    private List<String> mImageList;//存储图片路径
     private Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -58,11 +58,9 @@ public class ChooseImageActivity extends Activity implements View.OnClickListene
         setClickListener();
     }
 
-    private void setClickListener(){
-        mBtnBack.setOnClickListener(this);
-        mBtnFinish.setOnClickListener(this);
-    }
-
+    /**
+     * 初始化控件
+     */
     private void initView(){
         mLoadImage = LoadImage.getInstance();
         mImageList = new ArrayList<String>();
@@ -71,6 +69,9 @@ public class ChooseImageActivity extends Activity implements View.OnClickListene
         mBtnFinish = (Button) findViewById(R.id.main_bt_finish);
     }
 
+    /**
+     * 扫描手机上的图片，将图片的路径数据回调
+     */
     private void getImage(){
         showDialog();
         ScanFile.scanImageFile(this, new ScanFile.ScanListener() {
@@ -91,12 +92,26 @@ public class ChooseImageActivity extends Activity implements View.OnClickListene
         });
     }
 
+    /**
+     * 设置事件监听
+     */
+    private void setClickListener(){
+        mBtnBack.setOnClickListener(this);
+        mBtnFinish.setOnClickListener(this);
+    }
+
+    /**
+     * 关闭活动的时候，关闭线程池
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();
         mLoadImage.closeThreadPool();
     }
 
+    /**
+     *创建展示对话框
+     */
     private void showDialog(){
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("请耐心等待");
@@ -105,12 +120,19 @@ public class ChooseImageActivity extends Activity implements View.OnClickListene
         progressDialog.show();
     }
 
+    /**
+     * 关闭对话框
+     */
     private void closeDialog(){
         if (progressDialog != null){
             progressDialog.dismiss();
         }
     }
 
+    /**
+     * 点击事件
+     * @param view
+     */
     @Override
     public void onClick(View view) {
         switch (view.getId()){
@@ -120,7 +142,7 @@ public class ChooseImageActivity extends Activity implements View.OnClickListene
             case R.id.main_bt_finish :
                 Intent intent = new Intent();
                 intent.putStringArrayListExtra("selected" , (ArrayList<String>) mAdapter.getSelectedList());
-                setResult(RESULT_OK, intent);
+                setResult(RESULT_OK, intent);//返回选择的图片路径数据到上一活动
                 finish();
                 break;
         }
