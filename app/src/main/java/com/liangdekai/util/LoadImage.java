@@ -1,13 +1,22 @@
 package com.liangdekai.util;
 
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 import android.util.LruCache;
+import android.util.SparseArray;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.ImageView;
+
+import com.liangdekai.activity.ImageDetailActivity;
+import com.liangdekai.photodepot.R;
 
 import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
@@ -23,6 +32,7 @@ public class LoadImage {
     public static final int COMPRESS_SIZE = 100;
     private static LoadImage mLoadImage;
     private Handler mThreadHandler;
+    private SparseArray<Bitmap> mBitmapArray ;
     private volatile Semaphore semaphore ;
     private Handler mHandler ;
     private LruCache<String , Bitmap> mLruCache ;
@@ -74,7 +84,21 @@ public class LoadImage {
         };
         mFixedThreadPool = Executors.newFixedThreadPool(THREAD_COUNT);
         mTaskList = new LinkedList<Runnable>();
+        mBitmapArray = new SparseArray<Bitmap>();
         semaphore = new Semaphore(THREAD_COUNT);//根据线程池中的线程数来创建信号量
+        mHandler = new Handler(Looper.getMainLooper()){
+            @Override
+            public void handleMessage(Message msg) {
+                Holder dataHolder = (Holder) msg.obj;
+                ImageView image = dataHolder.imageView;
+                String imagePath = dataHolder.path;
+                Bitmap imageBitmap = dataHolder.bitmap;
+                if (image.getTag().toString().equals(imagePath)){
+                    image.setImageBitmap(imageBitmap);
+                }
+
+            }
+        };
     }
 
     /**
@@ -126,18 +150,6 @@ public class LoadImage {
      */
     public void loadImage(final String path , final ImageView imageView){
         Holder holder = new Holder();
-        mHandler = new Handler(Looper.getMainLooper()){
-            @Override
-            public void handleMessage(Message msg) {
-                Holder dataHolder = (Holder) msg.obj;
-                ImageView image = dataHolder.imageView;
-                String imagePath = dataHolder.path;
-                Bitmap imageBitmap = dataHolder.bitmap;
-                if (image.getTag().toString().equals(imagePath)){
-                    image.setImageBitmap(imageBitmap);
-                }
-            }
-        };
         final Bitmap bitmap= getFromLruCache(path);
         if (bitmap != null){
             holder.bitmap = bitmap;
@@ -162,6 +174,55 @@ public class LoadImage {
                     semaphore.release();//释放信号量
                 }
             });
+        }
+    }
+
+    /**
+     * 加载压缩的大图
+     * @param path
+     * @param imageView
+     */
+    public void loadLargeImage(String path ,ImageView imageView){
+        Bitmap bitmap= getFromLruCache(path);
+        if (imageView != null){
+            if(bitmap != null){
+                imageView.setImageBitmap(bitmap);
+            }else {
+                imageView.setImageResource(R.mipmap.empty);
+                Bitmap bm = CompressImage.compressImage(path , COMPRESS_SIZE , COMPRESS_SIZE);//压缩图片
+                addToLruCache(path , bm);
+            }
+        }
+    }
+
+    /**
+     * 加载原图
+     * @param path
+     * @param imageView
+     */
+    public void loadImageDetail(final String path , final ImageView imageView , final int position){
+        addLoadTask(new Runnable() {
+            @Override
+            public void run() {
+                Holder holder = new Holder();
+                Bitmap bitmap = CompressImage.compressImage(path , 1000 , 1000);
+                mBitmapArray.put(position , bitmap);
+                holder.bitmap = bitmap;
+                holder.imageView = imageView;
+                holder.path = path ;
+                Message message = Message.obtain();
+                message.obj = holder ;
+                mHandler.sendMessage(message);
+                semaphore.release();//释放信号量
+            }
+        });
+    }
+
+    public void recycleBitmap(int position){
+        Bitmap bitmap = mBitmapArray.get(position);
+        if (bitmap != null && !bitmap.isRecycled()){
+            bitmap.recycle();
+            mBitmapArray.remove(position);
         }
     }
 
