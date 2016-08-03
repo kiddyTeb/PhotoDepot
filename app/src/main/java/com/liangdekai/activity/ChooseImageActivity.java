@@ -13,6 +13,7 @@ import android.widget.GridView;
 import android.widget.Toast;
 
 import com.liangdekai.adapter.ChooseImageAdapter;
+import com.liangdekai.bean.ImageFolder;
 import com.liangdekai.photodepot.R;
 import com.liangdekai.util.LoadImage;
 import com.liangdekai.util.ScanFile;
@@ -31,6 +32,7 @@ public class ChooseImageActivity extends Activity implements View.OnClickListene
     private ChooseImageAdapter mAdapter;
     private LoadImage mLoadImage;
     private List<String> mImageList;//存储图片路径
+    private List<ImageFolder> mFolderList ;//存储包含图片的所有文件夹
     private Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -62,11 +64,12 @@ public class ChooseImageActivity extends Activity implements View.OnClickListene
      * 初始化控件
      */
     private void initView(){
-        mLoadImage = LoadImage.getInstance();
-        mImageList = new ArrayList<String>();
-        mGridView = (GridView) findViewById(R.id.main_gv_photo);
-        mBtnBack = (Button) findViewById(R.id.main_bt_back);
-        mBtnFinish = (Button) findViewById(R.id.main_bt_finish);
+        mLoadImage = LoadImage.getInstance() ;
+        mFolderList = new ArrayList<ImageFolder>() ;
+        mImageList = new ArrayList<String>() ;
+        mGridView = (GridView) findViewById(R.id.main_gv_photo) ;
+        mBtnBack = (Button) findViewById(R.id.main_bt_back) ;
+        mBtnFinish = (Button) findViewById(R.id.main_bt_finish) ;
     }
 
     /**
@@ -76,11 +79,12 @@ public class ChooseImageActivity extends Activity implements View.OnClickListene
         showDialog();
         ScanFile.scanImageFile(this, new ScanFile.ScanListener() {
             @Override
-            public void succeed(List<String> imageList) {
-                mImageList = imageList;
-                Message message = Message.obtain();
+            public void succeed(List<String> imageList , List<ImageFolder> folderList) {
+                mFolderList = folderList ;
+                mImageList = imageList ;
+                Message message = Message.obtain() ;
                 message.what = SUCCEED ;
-                mHandler.sendMessage(message);
+                mHandler.sendMessage(message) ;
             }
 
             @Override

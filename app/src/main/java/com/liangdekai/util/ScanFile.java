@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 
+import com.liangdekai.bean.ImageFolder;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
@@ -22,7 +24,7 @@ public class ScanFile {
      * 接口回调
      */
     public interface ScanListener{
-        void succeed(List<String> imageList);
+        void succeed(List<String> imageList , List<ImageFolder> folderList);
         void failed();
     }
 
@@ -39,8 +41,9 @@ public class ScanFile {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                List<String> imageList = new ArrayList<String>();
-                List<File> fileList  = new ArrayList<File>();
+                List<ImageFolder> folderList = new ArrayList<ImageFolder>();
+                List<String> imageList = new ArrayList<String>();//装载所有图片的路径
+                List<File> fileList  = new ArrayList<File>();//装载扫描过的文件夹路径，避免重复获取
                 Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI ;
                 ContentResolver contentResolver = context.getContentResolver();
                 Cursor cursor = contentResolver.query(uri , null , MediaStore.Images.Media.MIME_TYPE +"=? or "+ MediaStore.Images.Media.MIME_TYPE+"=? or "+ MediaStore.Images.Media.MIME_TYPE+"=?" ,
@@ -58,13 +61,21 @@ public class ScanFile {
                     if (fileList.contains(imageFile)){
                         continue;
                     }
+                    //获取所有包含图片的文件
+                    ImageFolder imageFolder = new ImageFolder();
+                    imageFolder.setFolderDir(imageFile.getAbsolutePath());
+                    imageFolder.setFileCount(temp.size());
+                    imageFolder.setFirstImagePath(imageFile.getAbsolutePath()+"/"+temp.get(0));
+                    imageFolder.setFolderName(imageFile.getAbsolutePath());
+                    folderList.add(imageFolder);
+                    //将扫描过的文件装入容器中
                     fileList.add(imageFile);
                     for (int i = 0 ; i < temp.size() ; i++){
                         String absolutePath = imageFile.getAbsolutePath()+"/"+temp.get(i);
                         imageList.add(absolutePath);
                     }
                 }
-                listener.succeed(imageList);
+                listener.succeed(imageList , folderList);
                 cursor.close();
             }
         }).start();

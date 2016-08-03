@@ -219,10 +219,9 @@ public class LoadImage {
     }
 
     public void recycleBitmap(int position){
-        Bitmap bitmap = mBitmapArray.get(position);
-        if (bitmap != null && !bitmap.isRecycled()){
-            bitmap.recycle();
+        if (mBitmapArray.get(position) != null && !mBitmapArray.get(position).isRecycled()){
             mBitmapArray.remove(position);
+            mBitmapArray.get(position).recycle();
         }
     }
 
