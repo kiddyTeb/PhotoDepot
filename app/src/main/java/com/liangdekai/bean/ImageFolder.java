@@ -13,7 +13,7 @@ public class ImageFolder {
 
     public void setFolderName(String path) {
         int lastIndex = path.lastIndexOf("/");
-        this.folderName = path.substring(lastIndex);
+        this.folderName = path.substring(lastIndex+1);
     }
 
     public String getFirstImagePath() {

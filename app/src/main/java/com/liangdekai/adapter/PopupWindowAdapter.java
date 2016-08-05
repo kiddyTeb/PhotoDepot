@@ -1,6 +1,7 @@
 package com.liangdekai.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,17 +11,19 @@ import android.widget.TextView;
 
 import com.liangdekai.bean.ImageFolder;
 import com.liangdekai.photodepot.R;
-import com.liangdekai.util.CompressImage;
+import com.liangdekai.util.LoadImage;
 
 import java.util.List;
 
 public class PopupWindowAdapter extends BaseAdapter {
     private Context mContext ;
     private List<ImageFolder> mFolder ;
+    private LoadImage mLoadImage ;
 
     public PopupWindowAdapter(Context context, List<ImageFolder> folder) {
         this.mContext = context ;
         this.mFolder = folder ;
+        mLoadImage = LoadImage.getInstance();
     }
 
     @Override
@@ -53,9 +56,10 @@ public class PopupWindowAdapter extends BaseAdapter {
             view = convertView ;
             holder = (ViewHolder) view.getTag();
         }
-        holder.imageView.setImageBitmap(CompressImage.compressImage(mFolder.get(i).getFirstImagePath() , 100 , 100));
+        mLoadImage.loadLargeImage(mFolder.get(i).getFirstImagePath() , holder.imageView);
         holder.FileName.setText(mFolder.get(i).getFolderName());
-        holder.ImageCount.setText(mFolder.get(i).getFileCount());
+        String folderFile = mFolder.get(i).getFileCount()+"张";
+        holder.ImageCount.setText(folderFile);
         return view;
     }
 

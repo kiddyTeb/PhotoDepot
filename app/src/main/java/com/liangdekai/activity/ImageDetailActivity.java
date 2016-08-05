@@ -74,8 +74,6 @@ public class ImageDetailActivity extends Activity implements ViewPager.OnPageCha
     public void onPageSelected(int position) {
         setIndex(position);//设置当前图片位置，以及图片总数
         mLoadImage.loadImageDetail(mImageList.get(position) , mViewArray.get(position) , position);
-        mLoadImage.recycleBitmap(position+1);
-        mLoadImage.recycleBitmap(position-1);
         if (mImageList.size()>position+1 && position-1 >=0){
             mLoadImage.loadLargeImage(mImageList.get(position-1) , mViewArray.get(position-1));
             mLoadImage.loadLargeImage(mImageList.get(position+1) , mViewArray.get(position+1));
@@ -118,7 +116,6 @@ public class ImageDetailActivity extends Activity implements ViewPager.OnPageCha
         public void destroyItem(ViewGroup container, int position, Object object) {
             View view = (View) object;
             container.removeView(view);
-            mLoadImage.recycleBitmap(position);
         }
 
         @Override

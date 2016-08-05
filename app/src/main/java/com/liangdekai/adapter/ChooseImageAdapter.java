@@ -21,6 +21,7 @@ public class ChooseImageAdapter extends BaseAdapter{
     private List<String> mImageList ;
     private Context mContext ;
     private LoadImage mLoadImage ;
+    private onCountChangeListener onChangeListener ;
 
     public ChooseImageAdapter(Context context , List<String> list){
         this.mContext = context ;
@@ -61,6 +62,7 @@ public class ChooseImageAdapter extends BaseAdapter{
         }
         viewHolder.imageView.setImageResource(R.mipmap.empty);
         viewHolder.imageView.setTag(mImageList.get(i));//为每个图片控件设置TAG
+        viewHolder.imageButton.setTag(mImageList.get(i));
 
         viewHolder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,15 +86,17 @@ public class ChooseImageAdapter extends BaseAdapter{
      * @param path
      * @param viewHolder
      */
-    private void onButtonClick(String path , ViewHolder viewHolder){
+   private void onButtonClick(String path , ViewHolder viewHolder){
         if (mSelectedImage.contains(path)){//如果已选容器中存在点击对应的图片路径，则视为取消选择
             mSelectedImage.remove(path);//从容器中移除该路径
             viewHolder.imageButton.setImageResource(R.mipmap.picture_unselected);//改变按钮状态为未选状态
             viewHolder.imageView.setColorFilter(null);//取消滤镜
+            onChangeListener.onChange(mSelectedImage.size());
         }else{
             mSelectedImage.add(path);//添加已经选择的路径到容器中
             viewHolder.imageButton.setImageResource(R.mipmap.pictures_selected);//改变按钮状态为已选状态
             viewHolder.imageView.setColorFilter(Color.parseColor("#77000000"));//设置滤镜，点击改变颜色
+            onChangeListener.onChange(mSelectedImage.size());
         }
     }
 
@@ -102,6 +106,14 @@ public class ChooseImageAdapter extends BaseAdapter{
      */
     public List<String> getSelectedList(){
         return mSelectedImage;
+    }
+
+    public void setOnChangeListener(onCountChangeListener onChangeListener){
+        this.onChangeListener = onChangeListener ;
+    }
+
+    public interface onCountChangeListener{
+        void onChange(int count);
     }
 
     class ViewHolder {

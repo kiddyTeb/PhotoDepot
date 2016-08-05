@@ -32,7 +32,6 @@ public class LoadImage {
     public static final int COMPRESS_SIZE = 100;
     private static LoadImage mLoadImage;
     private Handler mThreadHandler;
-    private SparseArray<Bitmap> mBitmapArray ;
     private volatile Semaphore semaphore ;
     private Handler mHandler ;
     private LruCache<String , Bitmap> mLruCache ;
@@ -70,7 +69,9 @@ public class LoadImage {
         mThreadHandler = new Handler(taskThread.getLooper()){
             @Override
             public void handleMessage(Message msg) {
-                mFixedThreadPool.execute(getLoadTask());
+                if (!mFixedThreadPool.isShutdown()){
+                    mFixedThreadPool.execute(getLoadTask());
+                }
             }
         };
 
@@ -84,7 +85,7 @@ public class LoadImage {
         };
         mFixedThreadPool = Executors.newFixedThreadPool(THREAD_COUNT);
         mTaskList = new LinkedList<Runnable>();
-        mBitmapArray = new SparseArray<Bitmap>();
+        //mBitmapArray = new SparseArray<Bitmap>();
         semaphore = new Semaphore(THREAD_COUNT);//根据线程池中的线程数来创建信号量
         mHandler = new Handler(Looper.getMainLooper()){
             @Override
@@ -205,9 +206,7 @@ public class LoadImage {
             @Override
             public void run() {
                 Holder holder = new Holder();
-                Bitmap bitmap = CompressImage.compressImage(path , 1000 , 1000);
-                mBitmapArray.put(position , bitmap);
-                holder.bitmap = bitmap;
+                holder.bitmap = CompressImage.compressImage(path , 1000 , 1000);;
                 holder.imageView = imageView;
                 holder.path = path ;
                 Message message = Message.obtain();
@@ -218,12 +217,14 @@ public class LoadImage {
         });
     }
 
-    public void recycleBitmap(int position){
-        if (mBitmapArray.get(position) != null && !mBitmapArray.get(position).isRecycled()){
-            mBitmapArray.remove(position);
-            mBitmapArray.get(position).recycle();
+    /*public void recycleBitmap(int position){
+        if (mBitmapArray != null){
+            if (mBitmapArray.get(position) != null && !mBitmapArray.get(position).isRecycled()){
+                mBitmapArray.get(position).recycle();
+                mBitmapArray.remove(position);
+            }
         }
-    }
+    }*/
 
     public void closeThreadPool(){
         mFixedThreadPool.shutdownNow();

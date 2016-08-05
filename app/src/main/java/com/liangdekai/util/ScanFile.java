@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import com.liangdekai.bean.ImageFolder;
 
@@ -44,6 +45,9 @@ public class ScanFile {
                 List<ImageFolder> folderList = new ArrayList<ImageFolder>();
                 List<String> imageList = new ArrayList<String>();//装载所有图片的路径
                 List<File> fileList  = new ArrayList<File>();//装载扫描过的文件夹路径，避免重复获取
+                ImageFolder folder = new ImageFolder();
+                folder.setFolderName("所有图片");
+                folderList.add(folder);
                 Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI ;
                 ContentResolver contentResolver = context.getContentResolver();
                 Cursor cursor = contentResolver.query(uri , null , MediaStore.Images.Media.MIME_TYPE +"=? or "+ MediaStore.Images.Media.MIME_TYPE+"=? or "+ MediaStore.Images.Media.MIME_TYPE+"=?" ,
