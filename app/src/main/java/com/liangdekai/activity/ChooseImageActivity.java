@@ -22,7 +22,6 @@ import com.liangdekai.adapter.ChooseImageAdapter;
 import com.liangdekai.adapter.PopupWindowAdapter;
 import com.liangdekai.bean.ImageFolder;
 import com.liangdekai.photodepot.R;
-import com.liangdekai.util.LoadImage;
 import com.liangdekai.util.ScanFile;
 
 import java.io.File;

@@ -11,7 +11,7 @@ import android.widget.ImageView;
 
 import com.liangdekai.activity.ImageDetailActivity;
 import com.liangdekai.photodepot.R;
-import com.liangdekai.util.LoadImage;
+import com.liangdekai.util.ShowImage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,13 +20,15 @@ public class ChooseImageAdapter extends BaseAdapter{
     private List<String> mSelectedImage;
     private List<String> mImageList ;
     private Context mContext ;
-    private LoadImage mLoadImage ;
+    //private TaskManager mLoadImage ;
+    private ShowImage mShowImage ;
     private onCountChangeListener onChangeListener ;
 
     public ChooseImageAdapter(Context context , List<String> list){
         this.mContext = context ;
         this.mImageList = list ;
-        mLoadImage = LoadImage.getInstance();
+        //mLoadImage = TaskManager.getInstance();
+        mShowImage = ShowImage.getInstance() ;
         mSelectedImage = new ArrayList<String>();
     }
 
@@ -54,7 +56,7 @@ public class ChooseImageAdapter extends BaseAdapter{
             viewHolder = new ViewHolder();
             view = LayoutInflater.from(mContext).inflate(R.layout.item_gv_choose_image, viewGroup , false);
             viewHolder.imageView = (ImageView) view.findViewById(R.id.choose_image_iv_item);
-            viewHolder.imageButton = (ImageButton) view.findViewById(R.id.main_ib_select);
+            viewHolder.imageButton = (ImageButton) view.findViewById(R.id.choose_ib_select);
             view.setTag(viewHolder);
         }else {
             view = convertView ;
@@ -77,7 +79,8 @@ public class ChooseImageAdapter extends BaseAdapter{
             }
         });
 
-        mLoadImage.loadImage(mImageList.get(i) , viewHolder.imageView);
+        //mLoadImage.loadImage(mImageList.get(i) , viewHolder.imageView);
+        mShowImage.loadImage(mImageList.get(i) , viewHolder.imageView);
         return view;
     }
 
