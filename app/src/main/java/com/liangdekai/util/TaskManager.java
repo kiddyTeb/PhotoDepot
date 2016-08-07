@@ -18,7 +18,6 @@ public class TaskManager {
     private static TaskManager mTaskManager;
     private Handler mThreadHandler;
     public volatile Semaphore semaphore ;
-    //private LruCache<String , Bitmap> mLruCache ;
     private ExecutorService mFixedThreadPool;
     private LinkedList<Runnable> mTaskList ;
 
@@ -58,39 +57,10 @@ public class TaskManager {
                 }
             }
         };
-
-        /*int maxMemory = (int) (Runtime.getRuntime().maxMemory());
-        int cacheMemory = maxMemory / 6 ;
-        mLruCache = new LruCache<String, Bitmap>(cacheMemory){
-            @Override
-            protected int sizeOf(String key, Bitmap value) {
-                return value.getByteCount();//返回一张图的大小
-            }
-        };*/
         mFixedThreadPool = Executors.newFixedThreadPool(THREAD_COUNT);
         mTaskList = new LinkedList<Runnable>();
         semaphore = new Semaphore(THREAD_COUNT);//根据线程池中的线程数来创建信号量
     }
-
-    /**
-     * 从缓存中获取图片
-     * @param key
-     * @return
-     */
-    /*public Bitmap getFromLruCache(String key){
-        return mLruCache.get(key);//根据KEY值从缓存中获取图片
-    }
-
-    /**
-     * 将图片添加到缓存当中
-     * @param key
-     * @param bitmap
-     */
-    /*public void addToLruCache(String key , Bitmap bitmap){
-        if (getFromLruCache(key) == null && bitmap !=null){
-            mLruCache.put(key , bitmap);//将图片添加到缓存当中
-        }
-    }*/
 
     /**
      * 从任务队列中获取任务

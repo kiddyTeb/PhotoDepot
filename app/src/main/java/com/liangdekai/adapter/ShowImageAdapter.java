@@ -9,7 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import com.liangdekai.photodepot.R;
-import com.liangdekai.util.CompressImage;
+import com.liangdekai.util.CompressTask;
 
 import java.util.List;
 
@@ -52,7 +52,7 @@ public class ShowImageAdapter extends BaseAdapter{
             view = convertView ;
             viewHolder = (ViewHolder) view.getTag();
         }
-        Bitmap bitmap = CompressImage.compressImage(mImageList.get(i) , 100 , 100);
+        Bitmap bitmap = CompressTask.compressImage(mImageList.get(i) , 100 , 100);
         viewHolder.imageView.setImageBitmap(bitmap);
         return view;
     }

@@ -15,7 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.liangdekai.photodepot.R;
-import com.liangdekai.util.ShowImage;
+import com.liangdekai.util.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ public class ImageDetailActivity extends Activity implements ViewPager.OnPageCha
     private int mLevel ; //标志当前位置
     private TextView mTextView ;
     //private TaskManager mLoadImage ;
-    private ShowImage mShowImage ;
+    private ImageLoader mImageLoader;
     private List<String> mImageList ;
     private SparseArray<ImageView> mViewArray ;
 
@@ -56,7 +56,7 @@ public class ImageDetailActivity extends Activity implements ViewPager.OnPageCha
         ViewPager viewPager = (ViewPager) findViewById(R.id.activity_vp_detail);
         mTextView = (TextView) findViewById(R.id.activity_tv_record);
         //mLoadImage = TaskManager.getInstance();
-        mShowImage = ShowImage.getInstance() ;
+        mImageLoader = ImageLoader.getInstance() ;
         mViewArray = new SparseArray<ImageView>();
         mImageList = getIntent().getStringArrayListExtra("imageList");//获取所有图片的路径
         mLevel = getIntent().getIntExtra("level", 0);//获取点击图片的当前位置
@@ -76,10 +76,10 @@ public class ImageDetailActivity extends Activity implements ViewPager.OnPageCha
     public void onPageSelected(int position) {
         setIndex(position);//设置当前图片位置，以及图片总数
         //mLoadImage.loadImageDetail(mImageList.get(position) , mViewArray.get(position));
-        mShowImage.loadImageDetail(mImageList.get(position) , mViewArray.get(position));
+        mImageLoader.loadImageDetail(mImageList.get(position) , mViewArray.get(position));
         if (mImageList.size()>position+1 && position-1 >=0){
-            mShowImage.loadLargeImage(mImageList.get(position-1) , mViewArray.get(position-1));
-            mShowImage.loadLargeImage(mImageList.get(position+1) , mViewArray.get(position+1));
+            mImageLoader.loadLargeImage(mImageList.get(position-1) , mViewArray.get(position-1));
+            mImageLoader.loadLargeImage(mImageList.get(position+1) , mViewArray.get(position+1));
         }
     }
 
@@ -107,9 +107,9 @@ public class ImageDetailActivity extends Activity implements ViewPager.OnPageCha
             ImageView imageView = (ImageView) view.findViewById(R.id.detail_show);
             imageView.setTag(mImageList.get(position));
             mViewArray.put(position , imageView);
-            mShowImage.loadLargeImage(mImageList.get(position) , imageView);
+            mImageLoader.loadLargeImage(mImageList.get(position) , imageView);
             if (position == mLevel){
-                mShowImage.loadImageDetail(mImageList.get(position) , imageView);
+                mImageLoader.loadImageDetail(mImageList.get(position) , imageView);
             }
             container.addView(view);
             return view;

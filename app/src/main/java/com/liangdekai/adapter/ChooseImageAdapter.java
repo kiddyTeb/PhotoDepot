@@ -11,7 +11,7 @@ import android.widget.ImageView;
 
 import com.liangdekai.activity.ImageDetailActivity;
 import com.liangdekai.photodepot.R;
-import com.liangdekai.util.ShowImage;
+import com.liangdekai.util.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,14 +21,14 @@ public class ChooseImageAdapter extends BaseAdapter{
     private List<String> mImageList ;
     private Context mContext ;
     //private TaskManager mLoadImage ;
-    private ShowImage mShowImage ;
+    private ImageLoader mImageLoader;
     private onCountChangeListener onChangeListener ;
 
     public ChooseImageAdapter(Context context , List<String> list){
         this.mContext = context ;
         this.mImageList = list ;
         //mLoadImage = TaskManager.getInstance();
-        mShowImage = ShowImage.getInstance() ;
+        mImageLoader = ImageLoader.getInstance() ;
         mSelectedImage = new ArrayList<String>();
     }
 
@@ -80,7 +80,7 @@ public class ChooseImageAdapter extends BaseAdapter{
         });
 
         //mLoadImage.loadImage(mImageList.get(i) , viewHolder.imageView);
-        mShowImage.loadImage(mImageList.get(i) , viewHolder.imageView);
+        mImageLoader.loadImage(mImageList.get(i) , viewHolder.imageView);
         return view;
     }
 

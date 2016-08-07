@@ -6,22 +6,20 @@ import android.os.Looper;
 import android.os.Message;
 import android.widget.ImageView;
 
-import com.liangdekai.photodepot.R;
-
 /**
  * 该类用于设置图片的显示
  */
 
-public class ShowImage {
+public class ImageLoader implements TaskListener{
     private static final int COMPRESS_SIZE = 100;
     private static final int COMPRESS_BIG_SIZE = 800;
-    private static ShowImage mShowImage ;
+    private static ImageLoader mImageLoader;
     private TaskManager mTaskManager;
     private CacheManager mCacheManager ;
     private Handler mHandler = new Handler(Looper.getMainLooper()){
         @Override
         public void handleMessage(Message msg) {
-            Holder dataHolder = (Holder) msg.obj;
+            ViewHolder dataHolder = (ViewHolder) msg.obj;
             ImageView image = dataHolder.imageView;
             String imagePath = dataHolder.path;
             Bitmap imageBitmap = dataHolder.bitmap;
@@ -35,18 +33,18 @@ public class ShowImage {
      * 获取该类的实例
      * @return
      */
-    public static ShowImage getInstance(){
-        if (mShowImage == null){
-            synchronized (ShowImage.class){
-                if (mShowImage == null){
-                    mShowImage = new ShowImage();
+    public static ImageLoader getInstance(){
+        if (mImageLoader == null){
+            synchronized (ImageLoader.class){
+                if (mImageLoader == null){
+                    mImageLoader = new ImageLoader();
                 }
             }
         }
-        return mShowImage;
+        return mImageLoader;
     }
 
-    public ShowImage(){
+    public ImageLoader(){
         mTaskManager = TaskManager.getInstance() ;
         mCacheManager = CacheManager.getInstance() ;
     }
@@ -57,7 +55,7 @@ public class ShowImage {
      * @param imageView
      */
     public void loadImage(final String path , final ImageView imageView){
-        Holder holder = new Holder();
+        ViewHolder holder = new ViewHolder();
         final Bitmap bitmap= mCacheManager.getFromLruCache(path);
         if (bitmap != null){
             holder.bitmap = bitmap;
@@ -67,7 +65,10 @@ public class ShowImage {
             message.obj = holder ;
             mHandler.sendMessage(message);
         }else{
-            mTaskManager.addLoadTask(new Runnable() {
+            TaskChain taskChain = new TaskChain();
+            taskChain.addTOTaskChain(new CompressTask(this , path , COMPRESS_SIZE , COMPRESS_SIZE , imageView));
+            mTaskManager.addLoadTask(new ImageTask(taskChain));
+            /*mTaskManager.addLoadTask(new Runnable() {
                 @Override
                 public void run() {//任务详情
                     Holder holder = new Holder();
@@ -81,7 +82,7 @@ public class ShowImage {
                     mHandler.sendMessage(message);
                     mTaskManager.semaphore.release();//释放信号量
                 }
-            });
+            });*/
         }
     }
 
@@ -96,9 +97,12 @@ public class ShowImage {
             if(bitmap != null){
                 imageView.setImageBitmap(bitmap);
             }else {
-                imageView.setImageResource(R.mipmap.empty);
+                TaskChain taskChain = new TaskChain();
+                taskChain.addTOTaskChain(new CompressTask(this , path , COMPRESS_SIZE , COMPRESS_SIZE , imageView));
+                mTaskManager.addLoadTask(new ImageTask(taskChain));
+                /*imageView.setImageResource(R.mipmap.empty);
                 Bitmap bm = CompressImage.compressImage(path , COMPRESS_SIZE , COMPRESS_SIZE);//压缩图片
-                mCacheManager.addToLruCache(path , bm);
+                mCacheManager.addToLruCache(path , bm);*/
             }
         }
     }
@@ -109,10 +113,13 @@ public class ShowImage {
      * @param imageView
      */
     public void loadImageDetail(final String path , final ImageView imageView){
-        mTaskManager.addLoadTask(new Runnable() {
+        TaskChain taskChain = new TaskChain();
+        taskChain.addTOTaskChain(new CompressTask(this , path , COMPRESS_BIG_SIZE , COMPRESS_BIG_SIZE , imageView));
+        mTaskManager.addLoadTask(new ImageTask(taskChain));
+        /*mTaskManager.addLoadTask(new Runnable() {
             @Override
             public void run() {
-                Holder holder = new Holder();
+                /*ViewHolder holder = new ViewHolder();
                 holder.bitmap = CompressImage.compressImage(path , COMPRESS_BIG_SIZE , COMPRESS_BIG_SIZE);
                 holder.imageView = imageView;
                 holder.path = path ;
@@ -121,12 +128,15 @@ public class ShowImage {
                 mHandler.sendMessage(message);
                 mTaskManager.semaphore.release();//释放信号量
             }
-        });
+        });*/
     }
 
-    class Holder {
-        ImageView imageView ;
-        Bitmap bitmap ;
-        String path ;
+    @Override
+    public void onFinish(ViewHolder viewHolder) {
+        mCacheManager.addToLruCache(viewHolder.path , viewHolder.bitmap);//添加到缓存
+        Message message = Message.obtain();
+        message.obj = viewHolder ;
+        mHandler.sendMessage(message);
+        mTaskManager.semaphore.release();//释放信号量
     }
 }

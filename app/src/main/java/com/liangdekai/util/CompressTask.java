@@ -2,11 +2,22 @@ package com.liangdekai.util;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.widget.ImageView;
 
-/**
- * 计算并且压缩图片的工具类
- */
-public class CompressImage {
+public class CompressTask implements BaseImageTask{
+    private int mWidth ;
+    private int mHeight ;
+    private ImageView mImageView ;
+    private String mPath ;
+    private TaskListener mTaskListener ;
+
+    public CompressTask(TaskListener taskListener , String path , int width , int height , ImageView imageView){
+        mTaskListener = taskListener ;
+        mPath = path ;
+        mWidth = width ;
+        mHeight = height ;
+        mImageView = imageView ;
+    }
 
     /**
      * 计算采样率
@@ -41,5 +52,14 @@ public class CompressImage {
         options.inSampleSize = calculateInSampleSize(options , requireHeight , requireWidth);
         options.inJustDecodeBounds = false ;
         return BitmapFactory.decodeFile(path , options);
+    }
+
+    @Override
+    public void handleTask() {
+        ViewHolder viewHolder = new ViewHolder() ;
+        viewHolder.bitmap = compressImage(mPath , mHeight , mWidth) ;
+        viewHolder.path = mPath ;
+        viewHolder.imageView = mImageView ;
+        mTaskListener.onFinish(viewHolder);
     }
 }
