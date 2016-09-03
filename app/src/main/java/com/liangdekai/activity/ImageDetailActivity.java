@@ -21,9 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ImageDetailActivity extends Activity implements ViewPager.OnPageChangeListener{
-    private int mLevel ; //标志当前位置
+    private int mLevel ; //标志当前图片的位置
     private TextView mTextView ;
-    //private TaskManager mLoadImage ;
     private ImageLoader mImageLoader;
     private List<String> mImageList ;
     private SparseArray<ImageView> mViewArray ;
@@ -75,12 +74,12 @@ public class ImageDetailActivity extends Activity implements ViewPager.OnPageCha
     @Override
     public void onPageSelected(int position) {
         setIndex(position);//设置当前图片位置，以及图片总数
-        //mLoadImage.loadImageDetail(mImageList.get(position) , mViewArray.get(position));
         mImageLoader.loadImageDetail(mImageList.get(position) , mViewArray.get(position));
-        if (mImageList.size()>position+1 && position-1 >=0){
+
+        /*if (mImageList.size()>position+1 && position-1 >=0){
             mImageLoader.loadLargeImage(mImageList.get(position-1) , mViewArray.get(position-1));
             mImageLoader.loadLargeImage(mImageList.get(position+1) , mViewArray.get(position+1));
-        }
+        }*/
     }
 
     /**

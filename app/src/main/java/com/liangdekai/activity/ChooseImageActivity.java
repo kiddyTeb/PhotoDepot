@@ -34,13 +34,13 @@ public class ChooseImageActivity extends Activity implements View.OnClickListene
     private static final int RESULT_OK = 1;
     private static final int FAILED = 0;
     private static final int SUCCEED = 1;
-    private ProgressDialog progressDialog ;
-    private GridView mGridView ;
     private Button mBtnBack ;
     private Button mBtnFinish ;
     private Button mBtnSkim ;
     private Button mBtnAllImage ;
+    private GridView mGridView ;
     private ChooseImageAdapter mAdapter;
+    private ProgressDialog progressDialog ;
     private List<String> mImageList;//存储图片路径
     private List<ImageFolder> mFolderList ;//存储包含图片的所有文件夹
     private PopupWindow mPopupWindow ;
@@ -68,7 +68,7 @@ public class ChooseImageActivity extends Activity implements View.OnClickListene
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_choose_image);
         initView();
-        getImage();
+        getImage();//扫描手机上的图片，将图片的路径数据回调
         setClickListener();
     }
 
@@ -188,12 +188,23 @@ public class ChooseImageActivity extends Activity implements View.OnClickListene
         mPopupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));
     }
 
+    /**
+     * 选择图片时数量的改变
+     * @param count
+     */
     @Override
     public void onChange(int count) {
         mBtnSkim.setText("预览(" + count + ")");
         mBtnFinish.setText("完成(" + count + ")");
     }
 
+    /**
+     * PopupWindow项点击事件
+     * @param adapterView
+     * @param view
+     * @param position
+     * @param l
+     */
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
         if (position != 0){
@@ -207,7 +218,7 @@ public class ChooseImageActivity extends Activity implements View.OnClickListene
                 }
             }));
             mImageList.clear();
-            for (int i= 0 ; i < temp.size() ; i++){
+            for (int i= 0 ; i < temp.size() ; i++){//拼装图片地址并添加到容器中
                 String path = folderDir+"/"+temp.get(i);
                 mImageList.add(path);
             }

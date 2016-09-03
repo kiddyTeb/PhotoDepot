@@ -79,7 +79,6 @@ public class ChooseImageAdapter extends BaseAdapter{
             }
         });
 
-        //mLoadImage.loadImage(mImageList.get(i) , viewHolder.imageView);
         mImageLoader.loadImage(mImageList.get(i) , viewHolder.imageView);
         return view;
     }

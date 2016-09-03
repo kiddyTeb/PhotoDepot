@@ -66,8 +66,9 @@ public class ImageLoader implements TaskListener{
             mHandler.sendMessage(message);
         }else{
             TaskChain taskChain = new TaskChain();
-            taskChain.addTOTaskChain(new CompressTask(this , path , COMPRESS_SIZE , COMPRESS_SIZE , imageView));
+            taskChain.addToTaskChain(new CompressTask(this , path , COMPRESS_SIZE , COMPRESS_SIZE , imageView));
             mTaskManager.addLoadTask(new ImageTask(taskChain));
+
             /*mTaskManager.addLoadTask(new Runnable() {
                 @Override
                 public void run() {//任务详情
@@ -98,7 +99,7 @@ public class ImageLoader implements TaskListener{
                 imageView.setImageBitmap(bitmap);
             }else {
                 TaskChain taskChain = new TaskChain();
-                taskChain.addTOTaskChain(new CompressTask(this , path , COMPRESS_SIZE , COMPRESS_SIZE , imageView));
+                taskChain.addToTaskChain(new CompressTask(this , path , COMPRESS_SIZE , COMPRESS_SIZE , imageView));
                 mTaskManager.addLoadTask(new ImageTask(taskChain));
                 /*imageView.setImageResource(R.mipmap.empty);
                 Bitmap bm = CompressImage.compressImage(path , COMPRESS_SIZE , COMPRESS_SIZE);//压缩图片
@@ -114,7 +115,7 @@ public class ImageLoader implements TaskListener{
      */
     public void loadImageDetail(final String path , final ImageView imageView){
         TaskChain taskChain = new TaskChain();
-        taskChain.addTOTaskChain(new CompressTask(this , path , COMPRESS_BIG_SIZE , COMPRESS_BIG_SIZE , imageView));
+        taskChain.addToTaskChain(new CompressTask(this , path , COMPRESS_BIG_SIZE , COMPRESS_BIG_SIZE , imageView));
         mTaskManager.addLoadTask(new ImageTask(taskChain));
         /*mTaskManager.addLoadTask(new Runnable() {
             @Override

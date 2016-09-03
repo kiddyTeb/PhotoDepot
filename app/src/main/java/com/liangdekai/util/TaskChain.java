@@ -13,7 +13,7 @@ public class TaskChain implements BaseImageTask{
         mImageTaskList = new ArrayList<BaseImageTask>();
     }
 
-    public void addTOTaskChain(BaseImageTask imageTask){
+    public void addToTaskChain(BaseImageTask imageTask){
         mImageTaskList.add(imageTask) ;
     }
 
